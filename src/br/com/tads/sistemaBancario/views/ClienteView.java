@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -104,7 +105,8 @@ public class ClienteView extends JPanel {
         clienteTable = new JTable(clienteTableModel);
         TableRowSorter<ClienteTableModel> sorter = new TableRowSorter<>(clienteTableModel);
         clienteTable.setRowSorter(sorter);
-        tablePanel.add(clienteTable , BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(clienteTable);
+        tablePanel.add(scrollPane, BorderLayout.CENTER);
         add(tablePanel, BorderLayout.CENTER);
         
         adicionarButton = new JButton("Adicionar");
