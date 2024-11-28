@@ -16,7 +16,7 @@ import br.com.tads.sistemaBancario.models.dao.interfaces.GenericDAOI;
 
 public class ContaDAO implements GenericDAOI<Conta, Integer> {
 
-    private static final String INSERT_CONTA_SQL = "INSERT INTO conta (numero,tipo,cpf, saldo, limite, deposito_minimo, montante_minimo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_CONTA_SQL = "INSERT INTO conta (tipo,cpf, saldo, limite, deposito_minimo, montante_minimo) VALUES ( ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_CONTA_SQL = "UPDATE conta SET saldo = ?, limite = ?, deposito_minimo = ?, montante_minimo = ? WHERE numero = ?";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM conta WHERE numero = ?";
     private static final String FIND_BY_CPF_SQL = "SELECT * FROM conta WHERE cpf = ?";
@@ -27,13 +27,12 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
     public boolean save(Conta conta) throws SQLException, IOException {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CONTA_SQL)) {
-            preparedStatement.setInt(1, conta.getNumero());
-            preparedStatement.setString(2, conta instanceof ContaCorrente ? "C" : "I");
-            preparedStatement.setString(3, conta.getDono().getCpf());
-            preparedStatement.setDouble(4, conta.getSaldo());
-            preparedStatement.setDouble(5, conta instanceof ContaCorrente ? ((ContaCorrente) conta).getLimite() : 0);
-            preparedStatement.setDouble(6, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getMontanteMinimo() : 0);
-            preparedStatement.setDouble(7, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getDepositoMinimo() : 0);
+            preparedStatement.setString(1, conta instanceof ContaCorrente ? "C" : "I");
+            preparedStatement.setString(2, conta.getDono().getCpf());
+            preparedStatement.setDouble(3, conta.getSaldo());
+            preparedStatement.setDouble(4, conta instanceof ContaCorrente ? ((ContaCorrente) conta).getLimite() : 0);
+            preparedStatement.setDouble(5, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getMontanteMinimo() : 0);
+            preparedStatement.setDouble(6, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getDepositoMinimo() : 0);
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {

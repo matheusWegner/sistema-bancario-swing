@@ -111,11 +111,9 @@ public class EditarContaView extends JPanel{
     
     private void remunerarConta() {
         try {
-            if (validaForm()) {
-                Cliente selectedCliente = (Cliente) clienteComboBox.getSelectedItem();
-                Result result = contaController.remunerarConta(selectedCliente);
-                JOptionPane.showMessageDialog(this, result.getMessage());
-            }
+            Cliente selectedCliente = (Cliente) clienteComboBox.getSelectedItem();
+            Result result = contaController.remunerarConta(selectedCliente);
+            JOptionPane.showMessageDialog(this, result.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao sacar da conta");

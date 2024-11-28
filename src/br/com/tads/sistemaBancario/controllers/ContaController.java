@@ -72,6 +72,9 @@ public class ContaController {
     public Result remunerarConta(Cliente cliente) {
         try {
     		Conta conta = contaDAO.findByCpf(cliente.getCpf());
+    		if(conta.getSaldo() < 0) {
+    			return new Result(false, "o saldo da conta está negativo");
+    		}
     		conta.remunera();
             if (conta instanceof ContaCorrente) {
             	contaDAO.update((ContaCorrente) conta);
