@@ -2,6 +2,7 @@ package br.com.tads.sistemaBancario.views;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -11,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import br.com.tads.sistemaBancario.controllers.ClienteController;
 import br.com.tads.sistemaBancario.controllers.ContaController;
 import br.com.tads.sistemaBancario.models.Result;
 import br.com.tads.sistemaBancario.models.cliente.Cliente;
@@ -31,18 +33,22 @@ public class CriarContaView extends JPanel {
 	    private JTextField depositoMinimoFieldInicial;
 	    private JButton criarContaButton;
 	    private ContaController contaController;
+	    private ClienteController clienteController;
+	    DefaultComboBoxModel<Cliente> comboClienteModel = new DefaultComboBoxModel<>();
 
 	    public CriarContaView(MainView telaPrincipal) {
 	    	
 	        this.telaPrincipal = telaPrincipal;
 	        this.contaController = new ContaController();
-
+	        this.clienteController = new ClienteController();
+	        
 	        setLayout(new FlowLayout());
 
 	        JPanel contaPanel = new JPanel(new GridLayout(7	,1 ,10 ,1));
 	        clienteLabel = new JLabel("Cliente:");
 	        clienteComboBox = new JComboBox<Cliente>();
-	        clienteComboBox.setModel(telaPrincipal.getClientesListModel());
+	        getClientes();
+	        clienteComboBox.setModel(comboClienteModel);
 	        contaPanel.add(clienteLabel);
 	        contaPanel.add(clienteComboBox);
 
@@ -71,7 +77,7 @@ public class CriarContaView extends JPanel {
 	        contaPanel.add(montanteMinimoLabel);
 	        contaPanel.add(montanteMinimoField);
 
-	        depositoMinimoLabel = new JLabel("Depósito Mínimo Inicial:");
+	        depositoMinimoLabel = new JLabel("Depósito Mínimo:");
 	        depositoMinimoFieldInicial = new JTextField();
 	        contaPanel.add(depositoMinimoLabel);
 	        contaPanel.add(depositoMinimoFieldInicial);
@@ -179,15 +185,22 @@ public class CriarContaView extends JPanel {
 
 		        if (result.getStatus()) {
 		            JOptionPane.showMessageDialog(this, result.getMessage());
-		            //telaPrincipal.showMainView();
 		        } else {
 		            JOptionPane.showMessageDialog(this, result.getMessage());
 		        }
 			} catch (Exception e) {
-				// TODO: handle exception
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Erro ao criar conta");
 			}
 	        
+	    }
+	    
+	    public List<Cliente> getClientes() {
+	    	List<Cliente> clientes = this.clienteController.getAllClientes();
+	    	this.comboClienteModel.removeAllElements();
+	    	for(Cliente cliente : clientes) {
+	    		this.comboClienteModel.addElement(cliente);
+	    	}
+	    	return clientes;
 	    }
 }

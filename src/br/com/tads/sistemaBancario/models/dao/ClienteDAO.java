@@ -1,5 +1,6 @@
 package br.com.tads.sistemaBancario.models.dao;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,10 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.tads.sistemaBancario.commom.ConnectionFactory;
 import br.com.tads.sistemaBancario.models.cliente.Cliente;
 import br.com.tads.sistemaBancario.models.dao.interfaces.GenericDAOI;
 
-public class ClienteDAO  extends JdbcConnection implements GenericDAOI<Cliente , String> {
+public class ClienteDAO  implements GenericDAOI<Cliente , String> {
 	 
 	private static final String INSERT_CLIENTES_SQL = "INSERT INTO cliente" +
 		        "  (nome, sobrenome, rg, cpf, endereco) VALUES " +
@@ -21,9 +23,9 @@ public class ClienteDAO  extends JdbcConnection implements GenericDAOI<Cliente ,
     private static final String UPDATE_CLIENTES_SQL = "update cliente set nome = ?, sobrenome= ?, rg =?, endereco =? where cpf = ?;";
 
 	@Override
-	public boolean save(Cliente cliente) throws SQLException{
+	public boolean save(Cliente cliente) throws SQLException, IOException{
 		 try (
-		    Connection connection = getConnection(); 
+		    Connection connection = ConnectionFactory.getConnection(); 
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CLIENTES_SQL)) {
             preparedStatement.setString(1, cliente.getNome());
             preparedStatement.setString(2, cliente.getSobrenome());
@@ -39,9 +41,9 @@ public class ClienteDAO  extends JdbcConnection implements GenericDAOI<Cliente ,
 	}
 
 	@Override
-	public boolean update(Cliente cliente) throws SQLException {
+	public boolean update(Cliente cliente) throws SQLException, IOException {
         boolean rowUpdated;
-        try (Connection connection = getConnection();
+        try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement statement = connection.prepareStatement(UPDATE_CLIENTES_SQL);) {
             statement.setString(1, cliente.getNome());
             statement.setString(2, cliente.getSobrenome());
@@ -54,9 +56,9 @@ public class ClienteDAO  extends JdbcConnection implements GenericDAOI<Cliente ,
     }
 
 	@Override
-	public Cliente findById(String id) throws SQLException{
+	public Cliente findById(String id) throws SQLException, IOException{
         Cliente cliente = null;
-        try (Connection connection = getConnection();
+        try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_CLIENTE_BY_ID);) {
             preparedStatement.setString(1, id);
             ResultSet rs = preparedStatement.executeQuery();
@@ -81,9 +83,9 @@ public class ClienteDAO  extends JdbcConnection implements GenericDAOI<Cliente ,
     }
 
 	@Override
-	 public List<Cliente> findAll() throws SQLException {
+	 public List<Cliente> findAll() throws SQLException, IOException {
         List<Cliente> clientes = new ArrayList<>();
-        try (Connection connection = getConnection();
+        try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_CLIENTES);) {
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -108,9 +110,9 @@ public class ClienteDAO  extends JdbcConnection implements GenericDAOI<Cliente ,
     }
 
 	@Override
-	 public boolean delete(String id) throws SQLException {
+	 public boolean delete(String id) throws SQLException, IOException {
         boolean rowDeleted;
-        try (Connection connection = getConnection(); 
+        try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement statement = connection.prepareStatement(DELETE_CLIENTES_SQL);) {
             statement.setString(1, id);
             rowDeleted = statement.executeUpdate() > 0;

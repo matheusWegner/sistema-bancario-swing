@@ -18,10 +18,9 @@ import br.com.tads.sistemaBancario.models.cliente.Cliente;
 public class MainView extends JFrame {
     private CardLayout cardLayout;
     private JPanel panelContainer;
-    private ClienteController clienteController;
-    DefaultComboBoxModel<Cliente> comboClienteModel = new DefaultComboBoxModel<>();
+    private EditarContaView editarContaView;
+    private CriarContaView criarContaView;
     public MainView() {
-    	this.clienteController = new ClienteController();
         setTitle("Sistema Bancário");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,8 +28,10 @@ public class MainView extends JFrame {
         panelContainer = new JPanel(cardLayout);
 
         panelContainer.add(new ClienteView(this), "Clientes");
-        panelContainer.add(new CriarContaView(this), "VincularConta");
-        panelContainer.add(new EditarContaView(this), "EditarConta");
+        criarContaView = new CriarContaView(this);
+        panelContainer.add(criarContaView, "VincularConta");
+        editarContaView = new EditarContaView(this);
+        panelContainer.add(editarContaView, "EditarConta");
         
         add(panelContainer);
         
@@ -54,25 +55,17 @@ public class MainView extends JFrame {
     }
 
     public void mostrarTela(String nomeTela) {
+    	if ("EditarConta".equals(nomeTela)) {
+            editarContaView.getClientes(); 
+        }
+    	if ("VincularConta".equals(nomeTela)) {
+    		criarContaView.getClientes(); 
+    	}
         cardLayout.show(panelContainer, nomeTela);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainView());
-    }
-    
-    public List<Cliente> getClientes() {
-    	List<Cliente> clientes = this.clienteController.getAllClientes();
-    	this.comboClienteModel.removeAllElements();
-    	for(Cliente cliente : clientes) {
-    		this.comboClienteModel.addElement(cliente);
-    	}
-    	return clientes;
-    }
-    
-  
-    public DefaultComboBoxModel<Cliente> getClientesListModel() {
-    	return this.comboClienteModel;
     }
     
 }

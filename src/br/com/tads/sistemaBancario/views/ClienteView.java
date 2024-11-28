@@ -44,10 +44,10 @@ public class ClienteView extends JPanel {
     private JButton excluirButton;
     private JButton cancelarButton;
     private JButton editarButton;
-    
+    private Cliente selectedCliente;
     private ClienteController clienteController;
     List<Cliente> clientes = new ArrayList<Cliente>();
-
+    
     public ClienteView(MainView telaPrincipal) {
         this.telaPrincipal = telaPrincipal;
         this.clienteController = new ClienteController();
@@ -101,7 +101,7 @@ public class ClienteView extends JPanel {
         buscaPanel.add(new JLabel("Buscar:"), BorderLayout.WEST);
         buscaPanel.add(buscaField, BorderLayout.EAST);
         tablePanel.add(buscaPanel,BorderLayout.NORTH);
-        clienteTableModel = new ClienteTableModel(telaPrincipal.getClientes());
+        clienteTableModel = new ClienteTableModel(getClientes());
         clienteTable = new JTable(clienteTableModel);
         TableRowSorter<ClienteTableModel> sorter = new TableRowSorter<>(clienteTableModel);
         clienteTable.setRowSorter(sorter);
@@ -148,12 +148,6 @@ public class ClienteView extends JPanel {
     private void adicionarCliente() {
         try {
         	if(validaForm()) {
-        		for(Cliente cliente : telaPrincipal.getClientes()) {
-        			if(cliente.getCpf().equals(cpfField.getText())) {
-        				JOptionPane.showMessageDialog(this, "Cpf já cadastrado");
-        				return;
-        			}
-        		}
         		Cliente cliente = new Cliente(
         				nomeField.getText(),
         				sobrenomeField.getText(),
@@ -206,18 +200,13 @@ public class ClienteView extends JPanel {
     private void atualizarCliente() {
     	try {
     		if(validaForm()) {
-    			int selectedRow = clienteTable.getSelectedRow();
-        		
-                if (selectedRow >= 0) {
-                	int modelRow = clienteTable.convertRowIndexToModel(selectedRow);
-                	
-                    Cliente cliente = clienteTableModel.getClienteAt(modelRow);
-                    cliente.setNome(nomeField.getText());
-                    cliente.setSobrenome(sobrenomeField.getText());
-                    cliente.setRg(rgField.getText());
+                if (this.selectedCliente != null && this.selectedCliente.getCpf() != null) {
+                	selectedCliente.setNome(nomeField.getText());
+                	selectedCliente.setSobrenome(sobrenomeField.getText());
+                	selectedCliente.setRg(rgField.getText());
                     //cliente.setCpf(cpfField.getText());
-                    cliente.setEndereco(enderecoField.getText());
-                    Result result = this.clienteController.updateCliente(cliente);
+                	selectedCliente.setEndereco(enderecoField.getText());
+                    Result result = this.clienteController.updateCliente(selectedCliente);
                     JOptionPane.showMessageDialog(this, result.getMessage());
                     if(result.getStatus()) {
                     	preencheTabelaClientes();
@@ -237,11 +226,8 @@ public class ClienteView extends JPanel {
              int dialogResult = JOptionPane.showConfirmDialog(this, "Deseja excluir o cliente ?", "Confirmação de exclusão", JOptionPane.YES_NO_OPTION);
 
              if (dialogResult == JOptionPane.YES_OPTION) {
-            	 int selectedRow = clienteTable.getSelectedRow();
-                 if (selectedRow >= 0) {
-                     int modelRow = clienteTable.convertRowIndexToModel(selectedRow);
-                     Cliente cliente = clienteTableModel.getClienteAt(modelRow);
-                     Result result = this.clienteController.deleteCliente(cliente.getCpf());
+                 if (this.selectedCliente != null && this.selectedCliente.getCpf() != null) {
+                     Result result = this.clienteController.deleteCliente(selectedCliente.getCpf());
                      JOptionPane.showMessageDialog(this, result.getMessage());
 
                      if(result.getStatus()) {
@@ -265,7 +251,11 @@ public class ClienteView extends JPanel {
     	try {
     		int selectedRow = clienteTable.getSelectedRow();
 	        if (selectedRow >= 0) {
-	        	preencherCamposClienteSelecionado();
+	            int modelRow = clienteTable.convertRowIndexToModel(selectedRow);
+	            Cliente cliente = clienteTableModel.getClienteAt(modelRow);
+	            cliente = this.clienteController.getCliente(cliente.getCpf());
+	            this.selectedCliente = cliente;
+	        	preencherCamposClienteSelecionado(cliente);
 	        	showEditActionButtons();
 	        }else {
 	            JOptionPane.showMessageDialog(this, "Selecione um cliente primeiro");
@@ -283,14 +273,12 @@ public class ClienteView extends JPanel {
         rgField.setText("");
         cpfField.setText("");
         enderecoField.setText("");
-        this.telaPrincipal.getClientes();
+        this.selectedCliente = null;
+        this.getClientes();
     }
     
-    private void preencherCamposClienteSelecionado() {
+    private void preencherCamposClienteSelecionado(Cliente cliente) {
     	try {
-    		int selectedRow = clienteTable.getSelectedRow();
-            int modelRow = clienteTable.convertRowIndexToModel(selectedRow);
-            Cliente cliente = clienteTableModel.getClienteAt(modelRow);
             nomeField.setText(cliente.getNome());
             sobrenomeField.setText(cliente.getSobrenome());
             rgField.setText(cliente.getRg());
@@ -337,6 +325,11 @@ public class ClienteView extends JPanel {
             }
         }
         clienteTableModel.setClientes(resultados);
+    }
+    
+    public List<Cliente> getClientes() {
+    	List<Cliente> clientes = this.clienteController.getAllClientes();
+    	return clientes;
     }
     
 }

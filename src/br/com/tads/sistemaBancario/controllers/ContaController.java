@@ -87,6 +87,11 @@ public class ContaController {
     public Result depositarConta(Cliente cliente, double valor) {
         try {
     		Conta conta = contaDAO.findByCpf(cliente.getCpf());
+    		if (conta instanceof ContaCorrente) {
+             	contaDAO.update((ContaCorrente) conta);
+            } else if (conta instanceof ContaInvestimento) {
+             	contaDAO.update((ContaInvestimento) conta);
+            }
             if (conta.deposita(valor)) {
                 if (conta instanceof ContaCorrente) {
                 	contaDAO.update((ContaCorrente) conta);
@@ -95,7 +100,7 @@ public class ContaController {
                 }
                 return new Result(true, "Depósito efetuado, novo saldo: " + conta.getSaldo());
             } else {
-                return new Result(false, "O valor de depósito é inválido.");
+                return new Result(false, "O valor de depósito é inválido ");
             }
         } catch (Exception e) {
             return new Result(false, "Ocorreu um erro inesperado ao depositar, tente novamente mais tarde.");
@@ -137,6 +142,18 @@ public class ContaController {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-    	return new Result(true, "Erro ao buscar saldo");
+    	return new Result(false, "Erro ao buscar saldo");
+    }
+
+    public Conta findByCliente(Cliente cliente) {
+    	
+    	try {
+    		Conta conta = contaDAO.findByCpf(cliente.getCpf());
+    		return conta;
+    	} catch (Exception e) {
+    		// TODO: handle exception
+    		e.printStackTrace();
+    	}
+    	return null;
     }
 }

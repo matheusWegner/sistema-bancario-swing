@@ -1,5 +1,6 @@
 package br.com.tads.sistemaBancario.models.dao;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,12 +8,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.tads.sistemaBancario.commom.ConnectionFactory;
 import br.com.tads.sistemaBancario.models.conta.Conta;
 import br.com.tads.sistemaBancario.models.conta.ContaCorrente;
 import br.com.tads.sistemaBancario.models.conta.ContaInvestimento;
 import br.com.tads.sistemaBancario.models.dao.interfaces.GenericDAOI;
 
-public class ContaDAO extends JdbcConnection implements GenericDAOI<Conta, Integer> {
+public class ContaDAO implements GenericDAOI<Conta, Integer> {
 
     private static final String INSERT_CONTA_SQL = "INSERT INTO conta (numero,tipo,cpf, saldo, limite, deposito_minimo, montante_minimo) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_CONTA_SQL = "UPDATE conta SET saldo = ?, limite = ?, deposito_minimo = ?, montante_minimo = ? WHERE numero = ?";
@@ -22,8 +24,8 @@ public class ContaDAO extends JdbcConnection implements GenericDAOI<Conta, Integ
     private static final String DELETE_CONTA_SQL = "DELETE FROM conta WHERE numero = ?";
 
     @Override
-    public boolean save(Conta conta) throws SQLException {
-        try (Connection connection = getConnection();
+    public boolean save(Conta conta) throws SQLException, IOException {
+        try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CONTA_SQL)) {
             preparedStatement.setInt(1, conta.getNumero());
             preparedStatement.setString(2, conta instanceof ContaCorrente ? "C" : "I");
@@ -41,8 +43,8 @@ public class ContaDAO extends JdbcConnection implements GenericDAOI<Conta, Integ
     }
 
     @Override
-    public boolean update(Conta conta) throws SQLException {
-        try (Connection connection = getConnection();
+    public boolean update(Conta conta) throws SQLException, IOException {
+        try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CONTA_SQL)) {
             preparedStatement.setDouble(1, conta.getSaldo());
             preparedStatement.setDouble(2, conta instanceof ContaCorrente ? ((ContaCorrente) conta).getLimite() : 0);
@@ -58,8 +60,8 @@ public class ContaDAO extends JdbcConnection implements GenericDAOI<Conta, Integ
     }
 
     @Override
-    public Conta findById(Integer id) throws SQLException {
-        try (Connection connection = getConnection();
+    public Conta findById(Integer id) throws SQLException, IOException {
+        try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -83,8 +85,8 @@ public class ContaDAO extends JdbcConnection implements GenericDAOI<Conta, Integ
         }
     }
 
-    public Conta findByCpf(String idCliente) throws SQLException {
-    	try (Connection connection = getConnection();
+    public Conta findByCpf(String idCliente) throws SQLException, IOException {
+    	try (Connection connection = ConnectionFactory.getConnection();
     			PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_CPF_SQL)) {
     		preparedStatement.setString(1, idCliente);
     		ResultSet resultSet = preparedStatement.executeQuery();
@@ -110,9 +112,9 @@ public class ContaDAO extends JdbcConnection implements GenericDAOI<Conta, Integ
     }
 
     @Override
-    public List<Conta> findAll() throws SQLException {
+    public List<Conta> findAll() throws SQLException, IOException {
         List<Conta> contas = new ArrayList<>();
-        try (Connection connection = getConnection();
+        try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
@@ -137,8 +139,8 @@ public class ContaDAO extends JdbcConnection implements GenericDAOI<Conta, Integ
     }
 
     @Override
-    public boolean delete(Integer id) throws SQLException {
-        try (Connection connection = getConnection();
+    public boolean delete(Integer id) throws SQLException, IOException {
+        try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CONTA_SQL)) {
             preparedStatement.setInt(1, id);
             int rowsAffected = preparedStatement.executeUpdate();
