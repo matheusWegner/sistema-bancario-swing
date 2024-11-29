@@ -3,17 +3,11 @@ package br.com.tads.sistemaBancario.views;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-import br.com.tads.sistemaBancario.controllers.ClienteController;
-import br.com.tads.sistemaBancario.models.cliente.Cliente;
 
 public class MainView extends JFrame {
     private CardLayout cardLayout;

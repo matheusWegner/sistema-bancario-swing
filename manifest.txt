@@ -1,0 +1,2 @@
+Main-Class: br.com.tads.sistemaBancario.views.MainView
+Class-Path: mysql-connector-j-9.1.0.jar

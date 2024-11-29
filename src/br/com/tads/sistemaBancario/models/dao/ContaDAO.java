@@ -31,8 +31,8 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
             preparedStatement.setString(2, conta.getDono().getCpf());
             preparedStatement.setDouble(3, conta.getSaldo());
             preparedStatement.setDouble(4, conta instanceof ContaCorrente ? ((ContaCorrente) conta).getLimite() : 0);
-            preparedStatement.setDouble(5, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getMontanteMinimo() : 0);
-            preparedStatement.setDouble(6, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getDepositoMinimo() : 0);
+            preparedStatement.setDouble(5, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getDepositoMinimo() : 0);
+            preparedStatement.setDouble(6, conta instanceof ContaInvestimento ? ((ContaInvestimento) conta).getMontanteMinimo() : 0);
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {
