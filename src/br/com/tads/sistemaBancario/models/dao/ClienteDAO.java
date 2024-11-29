@@ -23,7 +23,7 @@ public class ClienteDAO  implements GenericDAOI<Cliente , String> {
     private static final String UPDATE_CLIENTES_SQL = "update cliente set nome = ?, sobrenome= ?, rg =?, endereco =? where cpf = ?;";
 
 	@Override
-	public boolean save(Cliente cliente) throws SQLException, IOException{
+	public boolean save(Cliente cliente) throws Exception{
 		 try (
 		    Connection connection = ConnectionFactory.getConnection(); 
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CLIENTES_SQL)) {
@@ -41,7 +41,7 @@ public class ClienteDAO  implements GenericDAOI<Cliente , String> {
 	}
 
 	@Override
-	public boolean update(Cliente cliente) throws SQLException, IOException {
+	public boolean update(Cliente cliente) throws Exception {
         boolean rowUpdated;
         try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement statement = connection.prepareStatement(UPDATE_CLIENTES_SQL);) {
@@ -56,7 +56,7 @@ public class ClienteDAO  implements GenericDAOI<Cliente , String> {
     }
 
 	@Override
-	public Cliente findById(String id) throws SQLException, IOException{
+	public Cliente findById(String id) throws Exception{
         Cliente cliente = null;
         try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_CLIENTE_BY_ID);) {
@@ -83,7 +83,7 @@ public class ClienteDAO  implements GenericDAOI<Cliente , String> {
     }
 
 	@Override
-	 public List<Cliente> findAll() throws SQLException, IOException {
+	 public List<Cliente> findAll() throws Exception {
         List<Cliente> clientes = new ArrayList<>();
         try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_CLIENTES);) {
@@ -110,7 +110,7 @@ public class ClienteDAO  implements GenericDAOI<Cliente , String> {
     }
 
 	@Override
-	 public boolean delete(String id) throws SQLException, IOException {
+	 public boolean delete(String id) throws Exception {
         boolean rowDeleted;
         try (Connection connection = ConnectionFactory.getConnection(); 
              PreparedStatement statement = connection.prepareStatement(DELETE_CLIENTES_SQL);) {

@@ -15,5 +15,5 @@ create table conta(
     limite float,
     deposito_minimo float, 
     montante_minimo float,
-    FOREIGN KEY (cpf) references cliente(cpf)
+    FOREIGN KEY (cpf) references cliente(cpf) ON DELETE CASCADE
 );

@@ -24,7 +24,7 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
     private static final String DELETE_CONTA_SQL = "DELETE FROM conta WHERE numero = ?";
 
     @Override
-    public boolean save(Conta conta) throws SQLException, IOException {
+    public boolean save(Conta conta) throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CONTA_SQL)) {
             preparedStatement.setString(1, conta instanceof ContaCorrente ? "C" : "I");
@@ -42,7 +42,7 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
     }
 
     @Override
-    public boolean update(Conta conta) throws SQLException, IOException {
+    public boolean update(Conta conta) throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CONTA_SQL)) {
             preparedStatement.setDouble(1, conta.getSaldo());
@@ -59,7 +59,7 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
     }
 
     @Override
-    public Conta findById(Integer id) throws SQLException, IOException {
+    public Conta findById(Integer id) throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setInt(1, id);
@@ -84,7 +84,7 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
         }
     }
 
-    public Conta findByCpf(String idCliente) throws SQLException, IOException {
+    public Conta findByCpf(String idCliente) throws Exception {
     	try (Connection connection = ConnectionFactory.getConnection();
     			PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_CPF_SQL)) {
     		preparedStatement.setString(1, idCliente);
@@ -111,7 +111,7 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
     }
 
     @Override
-    public List<Conta> findAll() throws SQLException, IOException {
+    public List<Conta> findAll() throws Exception {
         List<Conta> contas = new ArrayList<>();
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
@@ -138,7 +138,7 @@ public class ContaDAO implements GenericDAOI<Conta, Integer> {
     }
 
     @Override
-    public boolean delete(Integer id) throws SQLException, IOException {
+    public boolean delete(Integer id) throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CONTA_SQL)) {
             preparedStatement.setInt(1, id);
